@@ -1,0 +1,122 @@
+﻿@model IEnumerable<Innov_Task.Models.item_Contract>
+
+@{
+    ViewBag.Title = "viewCont";
+}
+
+<head>
+</head>
+
+<br />
+<br />
+<br />
+<body>
+    @*<form method="post" action="~/Customers/SaveContract" class="form-horizontal">*@
+        @using (Html.BeginForm("SaveContract", "Customers", FormMethod.Post))
+        {
+            <div class="container">
+
+                <div class="form-group col-xs-6">
+                    Customer No. <input type="text" value="@ViewBag.resetId" class="form-control" disabled />
+                </div>
+
+
+                <div class="form-group col-xs-6">
+                    <p> Date: <input type="text" value="@ViewBag.resetDate.ToShortDateString()" class="form-control" disabled />
+                </div>
+                <br />
+                @Html.ActionLink("Add Item to Contract", "AddItemContract", "Customers", new { Cont_No = TempData["Cont_No"], Cust_Id = TempData["Cust_Id"] }, new { @class = "btn btn-success" })
+                <br />
+
+                <table id="AdminTable" class="table table-hover table-striped">
+
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="load">
+                        @{
+                            int count = 0;
+                            foreach (var item in Model)
+                            {
+                            <tr>
+
+
+                                <td>
+                                    <input class="form-control" id="name" value="@item.Item.name" name="name" disabled />
+                                </td>
+
+
+                                <td>
+                                    <input class="form-control" id="Price" value="@item.Item.Price" name="Price" disabled />
+                                </td>
+
+                                <td>
+                                    @Html.Hidden("contNo", item.Cont_No)
+
+                                    @Html.Hidden("itcount[" + count + "].Key", item.Code)
+                                    <input class="form-control calc" id="qnt" type="number" min="1" max="@item.Item.quantity" value="@item.Quantity" name="itcount[@count].Value" />
+                                </td>
+
+                                <td>
+                                    @{
+                                        var x = item.Quantity * ((int)item.Item.Price);
+                                    }
+                                    <label class="form-control net" id="net" name="Total">@x</label>
+                                </td>
+
+                                <td>
+                                    @Html.ActionLink("Delete", "DeleteItemContract", "Customers", new { Cont_No = item.Cont_No, Code = item.Code, Cust_Id = item.Contract.Cust_Id }, new { @class = "btn btn-danger" })
+                                </td>
+                            </tr>
+                                                count++;
+
+                                            }
+                                        }
+                    </tbody>
+
+                </table>
+
+                <br />
+
+                @*@Html.ActionLink("Edit Contract", "SaveContract", "Customers")*@
+
+                <input type="submit" value="Save Changes" class="btn btn-primary" />
+            </div>
+                                        }
+        @*</div>*@
+    @*</form>*@
+</body>
+
+@section scripts{
+    
+    <script>
+
+        $("#AdminTable").on("change", ".calc", function () {
+
+            //console.log("dddddd");
+            var trparent = $(this).parents('tr');
+            var netPrice = trparent.find('#net');
+            var priceVlue = trparent.find('#Price').val();
+            var qntVluee = trparent.find('#qnt').val();
+
+            //netPrice.text(parseInt(priceVlue) * parseInt(qntVluee));
+
+           
+                //console.log(priceVlue);
+               // console.log(qntVluee);
+           
+                
+            
+            console.log(netPrice.text(parseInt(priceVlue) * parseInt(qntVluee)));
+        });
+
+    </script>
+    
+    }

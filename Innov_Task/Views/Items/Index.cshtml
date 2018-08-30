@@ -1,0 +1,259 @@
+﻿@model IEnumerable<Innov_Task.Models.Item>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@section Scripts {
+
+    <script>
+        // PopUp Function
+        function PopUpForm(url) {
+            var FormDiv = $('<div>');
+            $.get(url)
+                .done(function (response) {
+                    FormDiv.html(response);
+
+                    PopUp = FormDiv.dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        title: "Item Data",
+                        height: 560,
+                        width: 500,
+                        close: function () {
+                            PopUp.dialog('destroy').remove();
+                        }
+                    })
+                })
+        }//End of PopUpForm
+    </script>
+
+
+    <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" />
+
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+}
+
+<head>
+</head>
+<br />
+<br />
+
+<body>
+    <div class="container">
+        <div class=" display-container">
+            <a href="" data-target=".AddCustomer" data-toggle="modal" class="btn btn-success">
+                Add a New Item
+            </a>
+        </div>
+
+        <br />
+        <table class="table table-bordered table-hover table-responsive">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() == 0)
+                {
+                    <tr>
+                        <td colspan="4"> No Data found</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                    <tr>
+
+                        <td> @item.name </td>
+                        <td> @item.quantity</td>
+                        <td> @item.Price </td>
+
+
+                        <td>
+                            <div class=" display-container">
+                                <button value="@item.Code" onclick="PopUpForm('@Url.Action("Edit","Items",new {Code=item.Code })')" class="btn btn-warning">
+                                    Edit
+                                </button>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class=" display-container">
+                                <button class="btn btn-danger deleteLink" data-assigned-id="@item.Code" onclick="deletes(this)">
+                                    Delete
+                                </button>
+                            </div>
+
+                        </td>
+                    </tr>
+                    }
+                }
+
+        </table>
+    </div>
+
+
+    <script>
+        //Delete Function
+
+        function deletes(elem) {
+            //alert($(elem).data('assigned-id'));
+            //alert(elem.Id);
+            //TempData["id"]=$(elem).data('assigned-id');
+            //alert(TempData["id"]);
+
+            $.ajax({
+                // alert(myVariableToSave); // Check the value.
+                type: 'POST',
+                url: '/Items/myendpoint',
+                data: "dataToSave=" + $(elem).data('assigned-id'),
+                success: function (result) {
+                    //alert("hi");
+                    $('#deleteModal').modal('show');
+                },
+                error: function (err, result) {
+                    //alert("Error in assigning dataToSave" + err.responseText);
+                }
+            });
+
+
+        }
+
+
+    </script>
+
+
+    <div class="modal fade AddCustomer" tabindex="-1" id="loginModal" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <button class="close" type="button" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+
+                    <h3>Add New Item</h3>
+                </div>
+                <div class="modal-body text-center ">
+
+                    <form method="post" action="~/Items/Add" enctype="multipart/form-data">
+
+                        <div class="form-group">
+
+                            <input type="text" name="name" class="form-control" placeholder="Item Name" required />
+                            
+                           
+                        </div>
+                        <br />
+
+                        <div class="form-group">
+
+                            <input type="number" min="1" name="quantity" class="form-control" placeholder="Item quantity" required />
+
+                        </div>
+                        <br />
+
+                        <div class="form-group">
+
+                            <input type="number" min="10.000" name="Price" class="form-control" placeholder="Item Price" required />
+
+                        </div>
+                        <br />
+
+                        <input type="submit" class="btn btn-success" />
+
+                        <button type="button" data-dismiss="modal" class="btn btn-danger ">
+                            Hide
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade EditCustomer" tabindex="-1" id="loginModal" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <button class="close" type="button" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+
+                    <h3>Edit Item</h3>
+                </div>
+                <div class="modal-body text-center ">
+
+                    <form method="post" action="~/Items/Edit" enctype="multipart/form-data">
+
+                        <div class="form-group">
+
+                            <input type="text" name="name" class="form-control" placeholder="Item Name" required />
+                        </div>
+                        <br />
+
+                        <div class="form-group">
+
+                            <input type="number" name="quantity" class="form-control" placeholder="Item quantity" required />
+
+                        </div>
+                        <br />
+
+                        <div class="form-group">
+
+                            <input type="number" name="Price" class="form-control" placeholder="Item Price" required />
+
+                        </div>
+                        <br />
+
+                        <input type="submit" class="btn btn-success" />
+
+                        <button type="button" data-dismiss="modal" class="btn btn-danger ">
+                            Hide
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade DeleteCustomer" id="deleteModal" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" tabindex="-1" id="deleteModal" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <button class="close" type="button" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+
+                    <h3>Delete Item</h3>
+                </div>
+                <div id="deleteModalBody" class="modal-body text-center ">
+
+                    <form method="post" action="~/Items/Delete">
+                        Are You Sure to delete @ViewBag.name
+
+                        <input type="submit" value="Delete" class="btn btn-danger" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+

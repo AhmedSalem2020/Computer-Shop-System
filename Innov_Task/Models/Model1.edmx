@@ -1,0 +1,266 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Innovation_TaskModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Contract">
+          <Key>
+            <PropertyRef Name="Cont_No" />
+          </Key>
+          <Property Name="Cust_Id" Type="int" Nullable="false" />
+          <Property Name="Cont_No" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="Total" Type="money" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+          <Property Name="Address" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Item">
+          <Key>
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="Code" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Price" Type="money" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" />
+          <Property Name="quantity" Type="int" />
+        </EntityType>
+        <EntityType Name="item_Contract">
+          <Key>
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="Cont_No" />
+          </Key>
+          <Property Name="Code" Type="int" Nullable="false" />
+          <Property Name="Cont_No" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" />
+        </EntityType>
+        <Association Name="FK_Contract_Customer">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+          <End Role="Contract" Type="Self.Contract" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Contract">
+              <PropertyRef Name="Cust_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_item_Contract_Contract">
+          <End Role="Contract" Type="Self.Contract" Multiplicity="1" />
+          <End Role="item_Contract" Type="Self.item_Contract" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Contract">
+              <PropertyRef Name="Cont_No" />
+            </Principal>
+            <Dependent Role="item_Contract">
+              <PropertyRef Name="Cont_No" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_item_Contract_Item">
+          <End Role="Item" Type="Self.Item" Multiplicity="1" />
+          <End Role="item_Contract" Type="Self.item_Contract" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="item_Contract">
+              <PropertyRef Name="Code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Innovation_TaskModelStoreContainer">
+          <EntitySet Name="Contract" EntityType="Self.Contract" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="item_Contract" EntityType="Self.item_Contract" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Contract_Customer" Association="Self.FK_Contract_Customer">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="Contract" EntitySet="Contract" />
+          </AssociationSet>
+          <AssociationSet Name="FK_item_Contract_Contract" Association="Self.FK_item_Contract_Contract">
+            <End Role="Contract" EntitySet="Contract" />
+            <End Role="item_Contract" EntitySet="item_Contract" />
+          </AssociationSet>
+          <AssociationSet Name="FK_item_Contract_Item" Association="Self.FK_item_Contract_Item">
+            <End Role="Item" EntitySet="Item" />
+            <End Role="item_Contract" EntitySet="item_Contract" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Innovation_TaskModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Contract">
+          <Key>
+            <PropertyRef Name="Cont_No" />
+          </Key>
+          <Property Name="Cust_Id" Type="Int32" Nullable="false" />
+          <Property Name="Cont_No" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="Total" Type="Decimal" Precision="19" Scale="4" />
+          <NavigationProperty Name="Customer" Relationship="Self.FK_Contract_Customer" FromRole="Contract" ToRole="Customer" />
+          <NavigationProperty Name="item_Contract" Relationship="Innovation_TaskModel.FK_item_Contract_Contract" FromRole="Contract" ToRole="item_Contract" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Contracts" Relationship="Self.FK_Contract_Customer" FromRole="Customer" ToRole="Contract" />
+        </EntityType>
+        <Association Name="FK_Contract_Customer">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+          <End Role="Contract" Type="Self.Contract" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Contract">
+              <PropertyRef Name="Cust_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Innovation_TaskEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Contracts" EntityType="Self.Contract" />
+          <EntitySet Name="Customers" EntityType="Self.Customer" />
+          <AssociationSet Name="FK_Contract_Customer" Association="Self.FK_Contract_Customer">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Contract" EntitySet="Contracts" />
+          </AssociationSet>
+          <EntitySet Name="item_Contract" EntityType="Innovation_TaskModel.item_Contract" />
+          <AssociationSet Name="FK_item_Contract_Contract" Association="Innovation_TaskModel.FK_item_Contract_Contract">
+            <End Role="Contract" EntitySet="Contracts" />
+            <End Role="item_Contract" EntitySet="item_Contract" />
+          </AssociationSet>
+          <EntitySet Name="Items" EntityType="Innovation_TaskModel.Item" />
+          <AssociationSet Name="FK_item_Contract_Item" Association="Innovation_TaskModel.FK_item_Contract_Item">
+            <End Role="Item" EntitySet="Items" />
+            <End Role="item_Contract" EntitySet="item_Contract" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="item_Contract">
+          <Key>
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="Cont_No" />
+          </Key>
+          <Property Name="Code" Type="Int32" Nullable="false" />
+          <Property Name="Cont_No" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" />
+          <NavigationProperty Name="Contract" Relationship="Innovation_TaskModel.FK_item_Contract_Contract" FromRole="item_Contract" ToRole="Contract" />
+          <NavigationProperty Name="Item" Relationship="Innovation_TaskModel.FK_item_Contract_Item" FromRole="item_Contract" ToRole="Item" />
+        </EntityType>
+        <Association Name="FK_item_Contract_Contract">
+          <End Type="Innovation_TaskModel.Contract" Role="Contract" Multiplicity="1" />
+          <End Type="Innovation_TaskModel.item_Contract" Role="item_Contract" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Contract">
+              <PropertyRef Name="Cont_No" />
+            </Principal>
+            <Dependent Role="item_Contract">
+              <PropertyRef Name="Cont_No" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Item">
+          <Key>
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="Code" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Price" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="quantity" Type="Int32" />
+          <NavigationProperty Name="item_Contract" Relationship="Innovation_TaskModel.FK_item_Contract_Item" FromRole="Item" ToRole="item_Contract" />
+        </EntityType>
+        <Association Name="FK_item_Contract_Item">
+          <End Type="Innovation_TaskModel.Item" Role="Item" Multiplicity="1" />
+          <End Type="Innovation_TaskModel.item_Contract" Role="item_Contract" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="item_Contract">
+              <PropertyRef Name="Code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Innovation_TaskModelStoreContainer" CdmEntityContainer="Innovation_TaskEntities">
+          <EntitySetMapping Name="Contracts">
+            <EntityTypeMapping TypeName="Innovation_TaskModel.Contract">
+              <MappingFragment StoreEntitySet="Contract">
+                <ScalarProperty Name="Cust_Id" ColumnName="Cust_Id" />
+                <ScalarProperty Name="Cont_No" ColumnName="Cont_No" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="Innovation_TaskModel.Customer">
+              <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="item_Contract">
+            <EntityTypeMapping TypeName="Innovation_TaskModel.item_Contract">
+              <MappingFragment StoreEntitySet="item_Contract">
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Cont_No" ColumnName="Cont_No" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Items">
+            <EntityTypeMapping TypeName="Innovation_TaskModel.Item">
+              <MappingFragment StoreEntitySet="Item">
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

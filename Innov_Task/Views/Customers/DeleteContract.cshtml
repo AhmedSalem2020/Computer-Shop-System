@@ -1,0 +1,27 @@
+﻿@model Innov_Task.Models.Contract
+
+@{
+    ViewBag.Title = "DeleteContract";
+}
+
+<head></head>
+<body>
+    <br />
+    <br />
+    <br />
+    <div class="container">
+        <form method="post" action="~/Customers/DeleteContract">
+            Are You Sure to delete @Model.Cont_No
+
+            @Html.HiddenFor(a => a.Cont_No)
+
+            @Html.HiddenFor(a => a.Cust_Id)
+
+
+            <input type="submit" value="Delete" class="btn btn-danger" />
+
+            @Html.ActionLink("Cancel", "viewContracts")
+
+        </form>
+    </div>
+</body>

@@ -1,0 +1,39 @@
+﻿@model Innov_Task.Models.item_Contract
+
+@{
+    ViewBag.Title = "AddItemContract";
+}
+
+<head>
+</head>
+<br />
+<br />
+<br />
+<body>
+    <form method="post" action="~/Customers/AddItemContract" class="form-horizontal">
+
+        @Html.HiddenFor(a => a.Cont_No)
+
+        <div class="form-group">
+            @*@Html.LabelFor(a => a.Code, new { @class = "col-sm-3 label-control" })*@
+            @*<span class="col-sm-3 label-control"> Items </span>*@
+            <div class="col-sm-6">
+
+                @Html.DropDownListFor(a => a.Code, null, "Choose an Item", new { @class = "form-control" })
+            </div>
+        </div>
+        <br />
+        <br />
+        <div class="form-group">
+
+            <div class="col-sm-6 col-sm-offest-3">
+
+                <input type="submit" value="Add to Contract" class="btn btn-warning" />
+
+                @Html.ActionLink("BackToList", "viewCont")
+            </div>
+
+        </div>
+
+    </form>
+</body>

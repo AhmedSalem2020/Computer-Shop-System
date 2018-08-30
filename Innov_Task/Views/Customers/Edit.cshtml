@@ -1,0 +1,42 @@
+﻿@model Innov_Task.Models.Customer
+
+@{
+    /**/
+
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm("Edit", "Customers", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(a => a.Id)
+    <div class="form-group">
+        @Html.LabelFor(a => a.Name, new { @class = "control-label" })
+        @Html.TextBoxFor(a => a.Name, new { @class = "form-control",required = "required" })
+        @Html.ValidationMessageFor(a => a.Name)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(a => a.Email, new { @class = "control-label" })
+        @Html.TextBoxFor(a => a.Email, new { @class = "form-control", required = "required", type = "email" })
+        @Html.ValidationMessageFor(a => a.Email)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(a => a.Address, new { @class = "control-label" })
+        @Html.TextBoxFor(a => a.Address, new { @class = "form-control" , required = "required"})
+        @Html.ValidationMessageFor(a => a.Address)
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Save Changes" class="btn btn-success" />
+        @*<input type="reset" value="Cancel" class="btn btn-warning" />*@
+    </div>
+}
+
+
+
+<div>
+    @Html.ActionLink("Cancel", "Index", "Customers", new { @class = "btn btn-info" })
+</div>
